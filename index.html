@@ -47,6 +47,7 @@
         <tbody id="errorTableBody"></tbody>
       </table>
     </div>
+    <button type="button" class="btn btn-primary" onclick="transform()">Transformar</button>
   </div>
 
   <!-- jQuery and Bootstrap JS -->
@@ -219,6 +220,23 @@
       }
 
       processNextData();
+    }
+
+    function transform() {
+      const url = 'https://apex.oracle.com/pls/apex/pangolin/store/transformation/';
+
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+          if (response === 200) {
+            alert('Transformación correcta');
+          }
+        },
+        error: function (xhr, status, error) {
+          alert('Error en la transformación:', error);
+        }
+      });
     }
   </script>
 </body>
