@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cargar archivo CSV</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <h2>Cargar archivo CSV</h2>
+    <form>
+      <div class="form-group">
+        <label for="csvFile">Selecciona un archivo CSV:</label>
+        <input type="file" class="form-control-file" id="csvFile" accept=".csv">
+      </div>
+      <button type="button" class="btn btn-primary" onclick="processFile()">Procesar</button>
+    </form>
+    <hr>
+    <div id="tableContainer" style="display: none;">
+      <h3>Datos del archivo CSV:</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr id="tableHeaders"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <button type="button" class="btn btn-success" onclick="saveToJson()">Guardar en JSON</button>
+      <button type="button" class="btn btn-primary" onclick="addData()">Añadir datos</button>
+
+    </div>
+  </div>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script>
+    let csvData = [];
+
+  function processFile() {
+    const fileInput = document.getElementById('csvFile');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = function (e) {
+      const contents = e.target.result;
+      parseCSV(contents);
+      displayTable();
+    };
+  
+    reader.readAsText(file);
+  }
+
+    function parseCSV(csv) {
+  const rows = csv.split('\n');
+  const headers = rows[0].split(',');
+
+  csvData = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    // Verificar si la última línea está vacía
+    if (i === rows.length - 1 && rows[i].trim() === '') {
+      break;
+    }
+
+    const rowData = rows[i].split(',');
+    if (rowData.length === headers.length) {
+      const obj = {};
+      for (let j = 0; j < headers.length; j++) {
+        const key = headers[j].trim();
+        let value = rowData[j].trim();
+
+        // Limpiar caracteres no deseados en el valor
+        value = value.replace(/\r/g, '').replace(/:/g, '');
+
+        obj[key] = isNaN(value) ? value : parseInt(value, 10);
+      }
+      csvData.push(obj);
+    }
+  }
+}
+
+
+    function displayTable() {
+      const tableHeaders = document.getElementById('tableHeaders');
+      const tableBody = document.getElementById('tableBody');
+      const headers = Object.keys(csvData[0]);
+
+      tableHeaders.innerHTML = '';
+      tableBody.innerHTML = '';
+
+      headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        tableHeaders.appendChild(th);
+      });
+
+      csvData.forEach(row => {
+        const tr = document.createElement('tr');
+        headers.forEach(header => {
+          const td = document.createElement('td');
+          td.textContent = row[header];
+          tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+      });
+
+      document.getElementById('tableContainer').style.display = 'block';
+    }
+
+    function saveToJson() {
+      const jsonData = JSON.stringify(csvData, null, 2);
+      const a = document.createElement('a');
+      const file = new Blob([jsonData], { type: 'application/json' });
+      a.href = URL.createObjectURL(file);
+      a.download = 'data.json';
+      a.click();
+    }
+
+    function addData() {
+      const url = 'https://apex.oracle.com/pls/apex/pangolin/store/purchase/'; // Reemplaza con la URL de tu API
+    
+      csvData.forEach((data) => {
+        const jsonData = JSON.stringify(data);
+      
+        $.ajax({
+          url: url,
+          type: 'POST',
+          data: jsonData,
+          contentType: 'application/json',
+          success: function (response) {
+            console.log('Datos agregados exitosamente:', response);
+          },
+          error: function (xhr, status, error) {
+            console.error('Error al agregar los datos:', error);
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
