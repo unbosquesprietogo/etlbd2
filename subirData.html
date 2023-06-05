@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cargar archivo CSV</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">
+      <img src="ruta/al/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
+      Pangolin
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="subirData.html">Subir Data</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Facturas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="login.html">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <h2>Cargar archivo CSV</h2>
+    <form>
+      <div class="form-group">
+        <label for="csvFile">Selecciona un archivo CSV:</label>
+        <input type="file" class="form-control-file" id="csvFile" accept=".csv">
+      </div>
+      <button type="button" class="btn btn-primary" onclick="processFile()">Procesar</button>
+    </form>
+    <hr>
+    <div id="tableContainer" style="display: none;">
+      <h3>Datos del archivo CSV:</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr id="tableHeaders"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <button type="button" class="btn btn-success" onclick="saveToJson()">Guardar en JSON</button>
+      <button type="button" class="btn btn-primary" onclick="addData()">Añadir datos</button>
+    </div>
+
+    <div id="statusMessage" style="display: none;">
+      <h3>Resultados:</h3>
+      <h4>Respuestas exitosas (201):</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr id="successTableHeaders"></tr>
+        </thead>
+        <tbody id="successTableBody"></tbody>
+      </table>
+      <h4>Respuestas con error (400):</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr id="errorTableHeaders"></tr>
+        </thead>
+        <tbody id="errorTableBody"></tbody>
+      </table>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="transform()">Transformar</button>
+  </div>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script>
+    let csvData = [];
+    let successData = [];
+    let errorData = [];
+
+    function processFile() {
+      const fileInput = document.getElementById('csvFile');
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const contents = e.target.result;
+        parseCSV(contents);
+        displayTable();
+      };
+
+      reader.readAsText(file);
+    }
+
+    function parseCSV(csv) {
+      const rows = csv.split('\n');
+      const headers = rows[0].split(',');
+
+      csvData = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        // Verificar si la última línea está vacía
+        if (i === rows.length - 1 && rows[i].trim() === '') {
+          break;
+        }
+
+        const rowData = rows[i].split(',');
+        if (rowData.length === headers.length) {
+          const obj = {};
+          for (let j = 0; j < headers.length; j++) {
+            const key = headers[j].trim();
+            let value = rowData[j].trim();
+
+            // Limpiar caracteres no deseados en el valor
+            value = value.replace(/\r/g, '').replace(/:/g, '');
+
+            obj[key] = isNaN(value) ? value : parseInt(value, 10);
+          }
+          csvData.push(obj);
+        }
+      }
+    }
+
+    function displayTable() {
+      const tableHeaders = document.getElementById('tableHeaders');
+      const tableBody = document.getElementById('tableBody');
+      const headers = Object.keys(csvData[0]);
+
+      tableHeaders.innerHTML = '';
+      tableBody.innerHTML = '';
+
+      headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        tableHeaders.appendChild(th);
+      });
+
+      csvData.forEach(row => {
+        const tr = document.createElement('tr');
+        headers.forEach(header => {
+          const td = document.createElement('td');
+          td.textContent = row[header];
+          tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+      });
+
+      document.getElementById('tableContainer').style.display = 'block';
+    }
+
+    function saveToJson() {
+      const jsonData = JSON.stringify(csvData, null, 2);
+      const a = document.createElement('a');
+      const file = new Blob([jsonData], { type: 'application/json' });
+      a.href = URL.createObjectURL(file);
+      a.download = 'data.json';
+      a.click();
+    }
+
+    function addData() {
+      const url = 'https://apex.oracle.com/pls/apex/pangolin/store/purchase/'; // Reemplaza con la URL de tu API
+      const totalData = csvData.length;
+      let processedData = 0;
+
+      successData = [];
+      errorData = [];
+
+      function processNextData() {
+        if (processedData < totalData) {
+          const data = csvData[processedData];
+          const jsonData = JSON.stringify(data);
+
+          $.ajax({
+            url: url,
+            type: 'POST',
+            data: jsonData,
+            contentType: 'application/json',
+            success: function (response) {
+              console.log('Datos agregados exitosamente:', response);
+              successData.push(data);
+              processedData++;
+              processNextData();
+            },
+            error: function (xhr, status, error) {
+              console.error('Error al agregar los datos:', error);
+              errorData.push(data);
+              processedData++;
+              processNextData();
+            }
+          });
+        } else {
+          displayResultTables();
+        }
+      }
+
+      function displayResultTables() {
+        const successTableHeaders = document.getElementById('successTableHeaders');
+        const successTableBody = document.getElementById('successTableBody');
+        const errorTableHeaders = document.getElementById('errorTableHeaders');
+        const errorTableBody = document.getElementById('errorTableBody');
+        const headers = Object.keys(csvData[0]);
+
+        successTableHeaders.innerHTML = '';
+        successTableBody.innerHTML = '';
+        errorTableHeaders.innerHTML = '';
+        errorTableBody.innerHTML = '';
+
+        headers.forEach(header => {
+          const th1 = document.createElement('th');
+          th1.textContent = header;
+          successTableHeaders.appendChild(th1);
+
+          const th2 = document.createElement('th');
+          th2.textContent = header;
+          errorTableHeaders.appendChild(th2);
+        });
+
+        successData.forEach(row => {
+          const tr = document.createElement('tr');
+          headers.forEach(header => {
+            const td = document.createElement('td');
+            td.textContent = row[header];
+            tr.appendChild(td);
+          });
+          successTableBody.appendChild(tr);
+        });
+
+        errorData.forEach(row => {
+          const tr = document.createElement('tr');
+          headers.forEach(header => {
+            const td = document.createElement('td');
+            td.textContent = row[header];
+            tr.appendChild(td);
+          });
+          errorTableBody.appendChild(tr);
+        });
+
+        document.getElementById('statusMessage').style.display = 'block';
+      }
+
+      processNextData();
+    }
+
+    function transform() {
+      const url = 'https://apex.oracle.com/pls/apex/pangolin/store/transformation/';
+
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (response) {
+          if (response === 200) {
+            alert('Transformación correcta');
+          }
+        },
+        error: function (xhr, status, error) {
+          alert('Error en la transformación:', error);
+        }
+      });
+    }
+  </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
