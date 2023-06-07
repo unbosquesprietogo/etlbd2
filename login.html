@@ -143,6 +143,8 @@
           "contrasena": password
         };
 
+        console.log(data);
+
         // Realizar la solicitud POST
         $.ajax({
           type: "POST",
@@ -161,10 +163,6 @@
               // Error: mostrar alerta de credenciales incorrectas
               alert("Las credenciales son incorrectas");
             }
-          },
-          error: function() {
-            // Error en la solicitud
-            alert("Error en la solicitud");
           }
         });
       });
