@@ -6,6 +6,8 @@ $(document).ready(function() {
       // Obtener los productos del response JSON
       var products = data.items;
 
+      console.log(products);
+
       // Construir las filas de la tabla con los productos
       var tableRows = '';
       for (var i = 0; i < products.length; i++) {
