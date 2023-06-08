@@ -1,43 +1,40 @@
 $(document).ready(function() {
-  // Realizar la petición AJAX al endpoint de productos
-  $.ajax({
-    url: 'https://apex.oracle.com/pls/apex/pangolin/store/inventory/',
-    type: 'GET',
-    dataType: 'json',
-    success: function(data) {
-      if (data && data.length > 0) {
-        // Construir las filas de la tabla con los datos de los productos
-        var tableRows = '';
-        for (var i = 0; i < data.length; i++) {
-          var product = data[i];
-          var row = '<tr>' +
-            '<td>' + product.id_producto + '</td>' +
-            '<td>' + product.codigo_barras + '</td>' +
-            '<td>' + product.nombre_producto + '</td>' +
-            '<td>' + product.descripcion + '</td>' +
-            '<td>' + product.precio_unitario + '</td>' +
-            '<td>' + product.cantidad_stock + '</td>' +
-            '</tr>';
-          tableRows += row;
-        }
-        $('#productTableBody').html(tableRows);
-      } else {
-        console.log('No se encontraron productos');
+  // Obtener los datos mediante una petición fetch al endpoint
+  fetch('https://apex.oracle.com/pls/apex/pangolin/store/inventory/')
+    .then(response => response.json())
+    .then(data => {
+      // Obtener los productos del response JSON
+      var products = data.items;
+
+      // Construir las filas de la tabla con los productos
+      var tableRows = '';
+      for (var i = 0; i < products.length; i++) {
+        var product = products[i];
+        tableRows += '<tr>';
+        tableRows += '<td>' + product.id_producto + '</td>';
+        tableRows += '<td>' + product.codigo_barras + '</td>';
+        tableRows += '<td>' + product.nombre_producto + '</td>';
+        tableRows += '<td>' + product.descripcion + '</td>';
+        tableRows += '<td>' + product.precio_unitario + '</td>';
+        tableRows += '<td>' + product.cantidad_stock + '</td>';
+        tableRows += '</tr>';
       }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log('Error al obtener los productos:', errorThrown);
-    }
-  });
+
+      // Insertar las filas en la tabla
+      $('#productTableBody').html(tableRows);
+    })
+    .catch(error => {
+      console.log('Error al obtener los productos:', error);
+    });
 
   // Configurar el evento click del botón de búsqueda
   $('#searchButton').click(function() {
     var searchTerm = $('#searchInput').val().toLowerCase();
-    var searchColumn = $('#searchColumn').val();
+    var selectedColumn = $('#columnSelect').val();
 
     // Filtrar los productos por el término de búsqueda en la columna seleccionada
     $('#productTableBody tr').filter(function() {
-      var columnText = $(this).find('td:eq(' + searchColumn + ')').text().toLowerCase();
+      var columnText = $(this).find('td:eq(' + selectedColumn + ')').text().toLowerCase();
       $(this).toggle(columnText.indexOf(searchTerm) > -1);
     });
   });
