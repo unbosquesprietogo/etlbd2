@@ -105,7 +105,6 @@
   <div class="container">
     <div class="login-container">
       <h2>Iniciar sesión</h2>
-      <form id="login-form">
         <div class="form-group">
           <label for="username">Nombre de usuario</label>
           <input type="text" id="username" placeholder="Ingrese su nombre de usuario">
@@ -120,7 +119,6 @@
           </div>
         </div>
         <button type="submit" class="btn btn-login">Iniciar sesión</button>
-      </form>
     </div>
   </div>
 
@@ -129,64 +127,50 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script>
     $(document).ready(function() {
-      // Capturar el evento de envío del formulario
-      $('#login-form').submit(function(event) {
-        event.preventDefault(); // Evitar el envío del formulario por defecto
-
+      // Obtener referencias a los elementos del formulario
+      var usernameInput = $('#username');
+      var passwordInput = $('#password');
+      var loginButton = $('.btn-login');
+    
+      // Manejar el evento de clic en el botón de inicio de sesión
+      loginButton.click(function() {
         // Obtener los valores de usuario y contraseña
-        var username = $('#username').val();
-        var password = $('#password').val();
-
-        // Crear el objeto JSON con los datos
+        var username = usernameInput.val();
+        var password = passwordInput.val();
+    
+        // Crear el objeto JSON con los datos de inicio de sesión
         var data = {
           "usuario": username,
           "contrasena": password
         };
-
-        console.log(data);
-        // Realizar la solicitud POST
+    
+        // Realizar la solicitud POST al servidor
         $.ajax({
-          type: "POST",
           url: "https://apex.oracle.com/pls/apex/pangolin/store/login/",
+          type: "POST",
           data: JSON.stringify(data),
           contentType: "application/json",
           success: function(response) {
-            console.log(data);
-            console.log(response.status);
+            // Verificar el código de respuesta
             if (response.status === 200) {
-              // Éxito: guardar token en el localStorage
-              localStorage.setItem('token', response.token);
-              localStorage.setItem('username', username);
-
-              // Redirigir al index.html
-              window.location.href = 'index.html';
+              // Guardar el token y el usuario en el localStorage
+              localStorage.setItem("token", response.token);
+              localStorage.setItem("usuario", username);
+              // Redirigir al usuario al index.html
+              window.location.href = "index.html";
             } else {
-              // Error: mostrar alerta de credenciales incorrectas
-              alert("Las credenciales son incorrectas");
+              // Mostrar mensaje de credenciales incorrectas
+              alert("Credenciales incorrectas");
             }
           },
           error: function() {
-            // Error en la solicitud
-            alert("Error en la solicitud");
+            // Mostrar mensaje de error en caso de falla de la solicitud
+            alert("Error al realizar la solicitud");
           }
         });
       });
-
-      // Mostrar u ocultar la contraseña al hacer clic en el ícono
-      $('#password-toggle').click(function() {
-        var passwordInput = $('#password');
-        var passwordToggleIcon = $(this).find('i');
-
-        if (passwordInput.attr('type') === 'password') {
-          passwordInput.attr('type', 'text');
-          passwordToggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-          passwordInput.attr('type', 'password');
-          passwordToggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-      });
     });
-  </script>
+    </script>
 </body>
 </html>
 
