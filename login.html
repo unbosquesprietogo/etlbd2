@@ -107,49 +107,15 @@
             <span id="loggedInUser"></span>
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#" id="logoutButton">Cerrar sesión</a>
+            <a class="dropdown-item" href="" id="logoutButton">
+              <i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar sesión
+            </a>
           </div>
         </li>
       </ul>
     </div>
 </nav>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Verificar si existen token y usuario en el localStorage
-    const token = localStorage.getItem("token");
-    const usuario = localStorage.getItem("usuario");
-
-    // Obtener referencias a los elementos de la barra de navegación
-    const navbarItems = document.getElementById("navbarItems");
-    const loginButton = document.getElementById("loginButton");
-    const userDropdown = document.getElementById("userDropdown");
-    const loggedInUser = document.getElementById("loggedInUser");
-    const logoutButton = document.getElementById("logoutButton");
-
-    if (token && usuario) {
-      // Mostrar elementos para el usuario logueado
-      navbarItems.removeChild(loginButton);
-      loggedInUser.textContent = usuario;
-      userDropdown.style.display = "block";
-
-      // Agregar evento al botón de cerrar sesión
-      logoutButton.addEventListener("click", function() {
-        // Realizar las acciones necesarias para cerrar sesión
-        // ...
-
-        // Redireccionar a la página de inicio de sesión
-        window.location.href = "login.html";
-      });
-    } else {
-      // Mostrar el botón de inicio de sesión
-      userDropdown.style.display = "none";
-      navbarItems.appendChild(loginButton);
-    }
-  });
-</script>
-
-  
 
   <div class="container">
     <div class="login-container">
@@ -172,54 +138,7 @@
   </div>
 
 
-<script>
-$(document).ready(function() {
-  // Obtener referencias a los elementos del formulario
-  var usernameInput = $('#username');
-  var passwordInput = $('#password');
-  var loginButton = $('.btn-login');
-
-  // Manejar el evento de clic en el botón de inicio de sesión
-  loginButton.click(function() {
-    // Obtener los valores de usuario y contraseña
-    var username = usernameInput.val();
-    var password = passwordInput.val();
-
-    // Crear el objeto JSON con los datos de inicio de sesión
-    var data = {
-      "usuario": username,
-      "contrasena": password
-    };
-
-    // Realizar la solicitud POST al servidor
-    fetch('https://apex.oracle.com/pls/apex/pangolin/store/login/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(function(response) {
-      if (response.status === 200) {
-        return response.json();
-      } else {
-        throw new Error('Credenciales incorrectas');
-      }
-    })
-    .then(function(data) {
-      // Guardar el token y el usuario en el localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('usuario', username);
-      // Redirigir al usuario al index.html
-      window.location.href = 'index.html';
-    })
-    .catch(function(error) {
-      // Mostrar mensaje de error
-      alert(error.message);
-    });
-  });
-});
-</script>
+  <script src="navbar.js"></script>
 </body>
 </html>
 
