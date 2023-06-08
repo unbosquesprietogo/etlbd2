@@ -34,7 +34,7 @@ $(document).ready(function() {
 
     // Filtrar los productos por el término de búsqueda en la columna seleccionada
     $('#productTableBody tr').filter(function() {
-      var columnText = $(this).find('td:eq(' + selectedColumn + ')').text().toLowerCase();
+      var columnText = $(this).find('td').eq(selectedColumn).text().toLowerCase();
       $(this).toggle(columnText.indexOf(searchTerm) > -1);
     });
   });
