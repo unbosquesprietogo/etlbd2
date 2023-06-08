@@ -397,3 +397,53 @@ INSERT INTO usuarios (nombre,contrasena) VALUES ('admin','123456');
 
 
 select * from vista_factura order by id_factura;
+
+CREATE OR REPLACE PROCEDURE InsertOrUpdateProducto(
+    p_codigo_barras IN VARCHAR2,
+    p_nombre_producto IN VARCHAR2,
+    p_descripcion IN VARCHAR2,
+    p_precio_unitario IN NUMBER,
+    p_cantidad_stock IN NUMBER,
+    p_status_code OUT NUMBER,
+    p_error_message OUT VARCHAR2
+)
+IS
+BEGIN
+  -- Verificar si el producto existe en la tabla
+  DECLARE
+    v_product_id Productos.ID_Producto%TYPE;
+    v_stock Productos.Cantidad_Stock%TYPE;
+  BEGIN
+    SELECT ID_Producto, Cantidad_Stock
+    INTO v_product_id, v_stock
+    FROM Productos
+    WHERE Codigo_Barras = p_codigo_barras;
+
+    -- Producto existe, actualizar información y sumar al stock existente
+    UPDATE Productos
+    SET Nombre_Producto = p_nombre_producto,
+        Descripcion = p_descripcion,
+        Precio_Unitario = p_precio_unitario,
+        Cantidad_Stock = v_stock + p_cantidad_stock
+    WHERE Codigo_Barras = p_codigo_barras;
+
+    -- Asignar status_code y mensaje de éxito
+    p_status_code := 201;
+    p_error_message := 'Operación exitosa: Producto actualizado.';
+  EXCEPTION
+    -- Producto no existe, insertar nuevo producto
+    WHEN NO_DATA_FOUND THEN
+      INSERT INTO Productos (Codigo_Barras, Nombre_Producto, Descripcion, Precio_Unitario, Cantidad_Stock)
+      VALUES (p_codigo_barras, p_nombre_producto, p_descripcion, p_precio_unitario, p_cantidad_stock);
+
+      -- Asignar status_code y mensaje de éxito
+      p_status_code := 201;
+      p_error_message := 'Operación exitosa: Producto insertado.';
+    -- Capturar errores
+    WHEN OTHERS THEN
+      -- Asignar status_code y mensaje de error
+      p_status_code := 400;
+      p_error_message := 'Error: ' || SQLERRM;
+  END;
+END;
+
