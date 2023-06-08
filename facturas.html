@@ -53,11 +53,46 @@
 
   <div class="container mt-4">
     <div class="row mb-2">
-      <!-- ... Código de búsqueda y tabla omitido por brevedad ... -->
+      <div class="col-md-6">
+        <h2>Listado de Facturas</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <select class="form-control" id="columnSelect">
+            <option value="id_factura">ID Factura</option>
+            <option value="id_cliente">ID Cliente</option>
+            <option value="identificacion">Identificación</option>
+            <option value="nombre">Nombre</option>
+            <option value="apellido">Apellido</option>
+            <option value="fecha">Fecha</option>
+            <option value="subtotal">Subtotal</option>
+            <option value="iva">IVA</option>
+            <option value="descuento">Descuento</option>
+            <option value="total">Total</option>
+          </select>
+          <input type="text" class="form-control" placeholder="Buscar..." id="searchInput">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="searchButton">
+              <i class="fa fa-search"></i> Buscar
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <table class="table table-striped">
       <thead>
-        <!-- ... Código de encabezado de la tabla omitido por brevedad ... -->
+        <tr>
+          <th>ID Factura</th>
+          <th>ID Cliente</th>
+          <th>Identificación</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Fecha</th>
+          <th>Subtotal</th>
+          <th>IVA</th>
+          <th>Descuento</th>
+          <th>Total</th>
+        </tr>
       </thead>
       <tbody id="invoiceTableBody">
         <!-- Los datos se cargarán dinámicamente mediante JavaScript -->
@@ -112,55 +147,60 @@ function showInvoice(invoiceId) {
   fetch('https://apex.oracle.com/pls/apex/pangolin/store/view/invoice/' + invoiceId)
     .then(response => response.json())
     .then(data => {
-      var invoiceData = data.items[0];
-      var content = '<h2>Factura</h2>';
-      content += '<p>ID Factura: ' + invoiceData.id_factura + '</p>';
-      content += '<p>ID Cliente: ' + invoiceData.id_cliente + '</p>';
-      content += '<p>Nombre Cliente: ' + invoiceData.nombre_cliente + '</p>';
-      content += '<p>Apellido Cliente: ' + invoiceData.apellido_cliente + '</p>';
-      content += '<p>Correo Cliente: ' + invoiceData.correo_cliente + '</p>';
-      content += '<p>Teléfono Cliente: ' + invoiceData.telefono_cliente + '</p>';
-      content += '<p>Fecha: ' + invoiceData.fecha + '</p>';
+      if (data && data.items && data.items.length > 0) {
+        var invoiceData = data.items[0];
+        var content = '<h2>Factura</h2>';
+        content += '<p>ID Factura: ' + invoiceData.id_factura + '</p>';
+        content += '<p>ID Cliente: ' + invoiceData.id_cliente + '</p>';
+        content += '<p>Nombre Cliente: ' + invoiceData.nombre_cliente + '</p>';
+        content += '<p>Apellido Cliente: ' + invoiceData.apellido_cliente + '</p>';
+        content += '<p>Correo Cliente: ' + invoiceData.correo_cliente + '</p>';
+        content += '<p>Teléfono Cliente: ' + invoiceData.telefono_cliente + '</p>';
+        content += '<p>Fecha: ' + invoiceData.fecha + '</p>';
 
-      // Construir la tabla de productos
-      content += '<h3>Productos</h3>';
-      content += '<table class="table">';
-      content += '<thead>';
-      content += '<tr>';
-      content += '<th>Producto</th>';
-      content += '<th>Descripción</th>';
-      content += '<th>Precio Unitario</th>';
-      content += '<th>Cantidad</th>';
-      content += '<th>Descuento</th>';
-      content += '<th>Subtotal</th>';
-      content += '</tr>';
-      content += '</thead>';
-      content += '<tbody>';
-
-      // Recorrer cada producto de la factura y agregarlo a la tabla
-      for (var i = 0; i < invoiceData.items.length; i++) {
-        var product = invoiceData.items[i];
+        // Construir la tabla de productos
+        content += '<h3>Productos</h3>';
+        content += '<table class="table">';
+        content += '<thead>';
         content += '<tr>';
-        content += '<td>' + product.nombre_producto + '</td>';
-        content += '<td>' + product.descripcion + '</td>';
-        content += '<td>' + product.precio_unitario + '</td>';
-        content += '<td>' + product.cantidad + '</td>';
-        content += '<td>' + product.descuento_producto + '</td>';
-        content += '<td>' + product.subtotal_producto + '</td>';
+        content += '<th>Producto</th>';
+        content += '<th>Descripción</th>';
+        content += '<th>Precio Unitario</th>';
+        content += '<th>Cantidad</th>';
+        content += '<th>Descuento</th>';
+        content += '<th>Subtotal</th>';
         content += '</tr>';
+        content += '</thead>';
+        content += '<tbody>';
+
+        // Recorrer cada producto de la factura y agregarlo a la tabla
+        for (var i = 0; i < invoiceData.items.length; i++) {
+          var product = invoiceData.items[i];
+          content += '<tr>';
+          content += '<td>' + product.nombre_producto + '</td>';
+          content += '<td>' + product.descripcion + '</td>';
+          content += '<td>' + product.precio_unitario + '</td>';
+          content += '<td>' + product.cantidad + '</td>';
+          content += '<td>' + product.descuento_producto + '</td>';
+          content += '<td>' + product.subtotal_producto + '</td>';
+          content += '</tr>';
+        }
+
+        content += '</tbody>';
+        content += '</table>';
+
+        // Mostrar la ventana emergente con la información de la factura y los productos
+        $('#invoiceModal .modal-body').html(content);
+        $('#invoiceModal').modal('show');
+      } else {
+        console.log('No se encontraron datos de la factura');
       }
-
-      content += '</tbody>';
-      content += '</table>';
-
-      // Mostrar la ventana emergente con la información de la factura y los productos
-      $('#invoiceModal .modal-body').html(content);
-      $('#invoiceModal').modal('show');
     })
     .catch(error => {
       console.log('Error al obtener los datos de la factura:', error);
     });
 }
+
 
 </script>
 <script src="navbar.js"></script>
