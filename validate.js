@@ -1,4 +1,3 @@
-document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem("token");
     const usuario = localStorage.getItem("usuario");
   
@@ -22,4 +21,3 @@ document.addEventListener("DOMContentLoaded", function() {
           console.error("Error al realizar la petición:", error);
         });
     }
-  });
