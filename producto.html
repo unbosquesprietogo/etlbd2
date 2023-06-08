@@ -48,6 +48,40 @@
     </div>
   </nav>
 
+  <div class="container mt-4">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <h2>Listado de Productos</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Buscar por columna..." id="searchInput">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="searchButton">
+              <i class="fa fa-search"></i> Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID Producto</th>
+          <th>Código de Barras</th>
+          <th>Nombre del Producto</th>
+          <th>Descripción</th>
+          <th>Precio Unitario</th>
+          <th>Cantidad en Stock</th>
+        </tr>
+      </thead>
+      <tbody id="productTableBody">
+        <!-- Los datos se cargarán dinámicamente mediante JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+<script src="producto.js"></script>
 <script src="navbar.js"></script>
 </body>
 </html>
