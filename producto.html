@@ -58,7 +58,15 @@
       </div>
       <div class="col-md-6">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Buscar por columna..." id="searchInput">
+          <select class="form-control" id="searchColumn">
+            <option value="id_producto">ID Producto</option>
+            <option value="codigo_barras">Código de Barras</option>
+            <option value="nombre_producto">Nombre del Producto</option>
+            <option value="descripcion">Descripción</option>
+            <option value="precio_unitario">Precio Unitario</option>
+            <option value="cantidad_stock">Cantidad en Stock</option>
+          </select>
+          <input type="text" class="form-control" placeholder="Buscar..." id="searchInput">
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" id="searchButton">
               <i class="fa fa-search"></i> Buscar
@@ -86,5 +94,6 @@
 
 <script src="producto.js"></script>
 <script src="navbar.js"></script>
+
 </body>
 </html>
