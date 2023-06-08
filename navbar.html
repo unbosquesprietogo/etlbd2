@@ -1,0 +1,78 @@
+<script>
+    const usuario = localStorage.getItem('usuario');
+    const token = localStorage.getItem('token');
+
+if (token) {
+  // Realiza el fetch GET al endpoint con el usuario y token
+  fetch(`https://apex.oracle.com/pls/apex/pangolin/store/token/${usuario}/${token}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.items.token === token) {
+        // El token es válido, muestra el nombre de usuario en la barra de navegación
+        const nombreUsuario = data.items.usuario;
+        document.getElementById('nombre-usuario').textContent = nombreUsuario;
+        document.getElementById('nombre-usuario').classList.add('dropdown-toggle');
+        document.getElementById('nombre-usuario').setAttribute('data-toggle', 'dropdown');
+        document.getElementById('nombre-usuario').setAttribute('aria-haspopup', 'true');
+        document.getElementById('nombre-usuario').setAttribute('aria-expanded', 'false');
+        document.getElementById('nombre-usuario').setAttribute('id', 'dropdownMenuLink');
+        document.getElementById('dropdown-menu').classList.add('dropdown-menu');
+        document.getElementById('dropdown-menu').setAttribute('aria-labelledby', 'dropdownMenuLink');
+
+        // Agrega el listener al botón "Cerrar sesión"
+        document.getElementById('cerrar-sesion').addEventListener('click', () => {
+          // Elimina el usuario y token del local storage
+          localStorage.removeItem('usuario');
+          localStorage.removeItem('token');
+          // Redirecciona a la página de inicio de sesión
+          window.location.href = 'login.html';
+        });
+      } else {
+        // El token no es válido, muestra el botón de login
+        document.getElementById('boton-login').style.display = 'block';
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      // Error al realizar la solicitud, muestra el botón de login por defecto
+      document.getElementById('boton-login').style.display = 'block';
+    });
+} else {
+  // No hay token en el local storage, muestra el botón de login
+  document.getElementById('boton-login').style.display = 'block';
+}
+
+
+</script>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">
+      <img src="ruta/al/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
+      Pangolin
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="subirData.html">Subir Data</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="producto.html">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="facturas.html">Facturas</a>
+        </li>
+        <li class="nav-item" id="boton-login" style="display: none;">
+          <a class="nav-link" href="login.html">Login</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link" id="nombre-usuario"></a>
+          <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" id="cerrar-sesion" href="#">Cerrar sesión</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  

@@ -77,31 +77,13 @@
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">
-      <img src="ruta/al/logo.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
-      Pangolin
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="#">Subir Data</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Facturas</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Login</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <script>
+    $(function() {
+      // Cargar el contenido del archivo navbar.html en el contenedor con el id "navbar-container"
+      $("#navbar-container").load("navbar.html");
+    });
+  </script>
+
   <div class="container">
     <div class="login-container">
       <h2>Iniciar sesión</h2>
