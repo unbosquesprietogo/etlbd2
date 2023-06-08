@@ -147,6 +147,7 @@ function showInvoice(invoiceId) {
   fetch('https://apex.oracle.com/pls/apex/pangolin/store/view/invoice/' + invoiceId)
     .then(response => response.json())
     .then(data => {
+      console.log(data); 
       if (data && data.items && data.items.length > 0) {
         var invoiceData = data.items[0];
         var content = '<h2>Factura</h2>';
@@ -173,17 +174,20 @@ function showInvoice(invoiceId) {
         content += '</thead>';
         content += '<tbody>';
 
-        // Recorrer cada producto de la factura y agregarlo a la tabla
-        for (var i = 0; i < invoiceData.items.length; i++) {
-          var product = invoiceData.items[i];
-          content += '<tr>';
-          content += '<td>' + product.nombre_producto + '</td>';
-          content += '<td>' + product.descripcion + '</td>';
-          content += '<td>' + product.precio_unitario + '</td>';
-          content += '<td>' + product.cantidad + '</td>';
-          content += '<td>' + product.descuento_producto + '</td>';
-          content += '<td>' + product.subtotal_producto + '</td>';
-          content += '</tr>';
+        // Verificar si invoiceData.items está definido
+        if (Array.isArray(invoiceData.items)) {
+          // Recorrer cada producto de la factura y agregarlo a la tabla
+          for (var i = 0; i < invoiceData.items.length; i++) {
+            var product = invoiceData.items[i];
+            content += '<tr>';
+            content += '<td>' + product.nombre_producto + '</td>';
+            content += '<td>' + product.descripcion + '</td>';
+            content += '<td>' + product.precio_unitario + '</td>';
+            content += '<td>' + product.cantidad + '</td>';
+            content += '<td>' + product.descuento_producto + '</td>';
+            content += '<td>' + product.subtotal_producto + '</td>';
+            content += '</tr>';
+          }
         }
 
         content += '</tbody>';
@@ -200,6 +204,7 @@ function showInvoice(invoiceId) {
       console.log('Error al obtener los datos de la factura:', error);
     });
 }
+
 
 
 </script>
