@@ -26,6 +26,17 @@
     .product-table th {
       background-color: #f2f2f2;
     }
+
+    /* Estilos personalizados para el modal */
+    .modal-dialog {
+      max-width: 90%;
+      margin: 1.75rem auto;
+    }
+
+    .modal-body {
+      max-height: 60vh;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
@@ -229,7 +240,7 @@ function showInvoice(invoiceId) {
 
   <!-- Ventana emergente para mostrar la información de la factura -->
   <div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="invoiceModalLabel">Detalle de Factura</h5>
