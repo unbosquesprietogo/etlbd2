@@ -50,7 +50,7 @@ CREATE TABLE Productos (
     Nombre_Producto VARCHAR2(100),
     Descripcion VARCHAR2(200),
     Precio_Unitario NUMBER,
-    Cantidad_Stock NUMBER
+    Cantidad_Stock NUMsantipri    BER
 );
 
 -- Crear tabla Facturas

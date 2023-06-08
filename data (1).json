@@ -1,0 +1,37 @@
+[
+  {
+    "codigo_Barras": 1234567890,
+    "nombre_Producto": "Manzanas",
+    "descripcion": "Manzanas frescas",
+    "precio_Unitario": 2,
+    "cantidad_Stock": 50
+  },
+  {
+    "codigo_Barras": 9876543210,
+    "nombre_Producto": "Pan",
+    "descripcion": "Delicioso pan recién horneado",
+    "precio_Unitario": 1,
+    "cantidad_Stock": 100
+  },
+  {
+    "codigo_Barras": 4567890123,
+    "nombre_Producto": "Leche",
+    "descripcion": "Leche descremada",
+    "precio_Unitario": 3,
+    "cantidad_Stock": 75
+  },
+  {
+    "codigo_Barras": 3210987654,
+    "nombre_Producto": "Huevos",
+    "descripcion": "Huevos orgánicos",
+    "precio_Unitario": 4,
+    "cantidad_Stock": 30
+  },
+  {
+    "codigo_Barras": 6543210987,
+    "nombre_Producto": "Yogur",
+    "descripcion": "Yogur natural sin azúcar",
+    "precio_Unitario": 2,
+    "cantidad_Stock": 60
+  }
+]

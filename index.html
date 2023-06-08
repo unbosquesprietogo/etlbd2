@@ -3,16 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pangolin</title>
+  <title>Pangolin - Inicio</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      padding-top: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+    }
+
+    .hero-image {
+      background-image: url('pangolin-image.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 400px;
+    }
+
+    .hero-text {
+      text-align: center;
+      padding: 50px;
+      color: #fff;
+    }
+
+    .hero-text h1 {
+      font-size: 40px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .feature-box {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 40px;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .feature-description {
+      font-size: 16px;
+    }
+
+    .btn-container {
+      margin-top: 30px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="index.html"  style="margin-left: 5%;">
+    <a class="navbar-brand" href="index.html" style="margin-left: 5%;">
       <img src="icon.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
       Pangolin
     </a>
@@ -47,7 +104,43 @@
     </div>
   </nav>
 
+  <div class="hero-image">
+    <div class="hero-text">
+      <h1>Bienvenido a Pangolin</h1>
+      <p>Tu supermercado de confianza</p>
+    </div>
+  </div>
 
-<script src="navbar.js"></script>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="feature-box">
+          <i class="fas fa-shopping-cart feature-icon"></i>
+          <h3 class="feature-title">Amplia selección de productos</h3>
+          <p class="feature-description">Encuentra todo lo que necesitas en un solo lugar. Ofrecemos una amplia variedad de productos para satisfacer tus necesidades diarias.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <i class="fas fa-credit-card feature-icon"></i>
+          <h3 class="feature-title">Pagos seguros</h3>
+          <p class="feature-description">Realiza tus compras de forma segura con nuestras opciones de pago confiables. Tu información personal y financiera está protegida en todo momento.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <i class="fas fa-truck feature-icon"></i>
+          <h3 class="feature-title">Entrega rápida</h3>
+          <p class="feature-description">Nos comprometemos a entregar tus compras en el menor tiempo posible. Disfruta de la comodidad de recibir tus productos directamente en tu puerta.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-container">
+      <a href="producto.html" class="btn btn-primary">Explorar productos</a>
+    </div>
+  </div>
+
+  <script src="navbar.js"></script>
 </body>
 </html>
