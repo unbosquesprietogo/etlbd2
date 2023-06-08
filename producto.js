@@ -31,6 +31,8 @@ $(document).ready(function() {
   $('#searchButton').click(function() {
     var searchTerm = $('#searchInput').val().toLowerCase();
     var selectedColumn = $('#columnSelect').val();
+    console.log(searchTerm);
+    console.log(selectedColumn);
 
     // Filtrar los productos por el término de búsqueda en la columna seleccionada
     $('#productTableBody tr').filter(function() {
