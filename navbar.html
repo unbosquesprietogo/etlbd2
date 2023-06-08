@@ -40,6 +40,12 @@ if (token) {
 } else {
   // No hay token en el local storage, muestra el botón de login
   document.getElementById('boton-login').style.display = 'block';
+  redirigirALogin();
+}
+
+
+function redirigirALogin() {
+  window.location.href = 'login.html';
 }
 
 
