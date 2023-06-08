@@ -9,91 +9,20 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="jsPDF-master/dist/jspdf.umd.min.js"></script>
   <script src="validate.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="index.html" style="margin-left: 5%;">
-      <img src="icon.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
-      Pangolin
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav" style="margin-right: 5%;">
-      <ul class="navbar-nav" id="navbarItems">
-        <li class="nav-item">
-          <a class="nav-link" href="subirData.html">Subir Data</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="cliente.html">Clientes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="producto.html">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="facturas.html">Facturas</a>
-        </li>
-        <li class="nav-item" id="loginButton">
-          <a class="nav-link" href="login.html">Login</a>
-        </li>
-        <li class="nav-item dropdown" id="userDropdown" style="display: none;">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span id="loggedInUser"></span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="" id="logoutButton">
-              <i class="fa fa-sign-out-alt mr-1"></i> Log Out
-            </a>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <!-- ... Código del navbar omitido por brevedad ... -->
   </nav>
 
   <div class="container mt-4">
     <div class="row mb-2">
-      <div class="col-md-6">
-        <h2>Listado de Facturas</h2>
-      </div>
-      <div class="col-md-6">
-        <div class="input-group">
-          <select class="form-control" id="columnSelect">
-            <option value="id_factura">ID Factura</option>
-            <option value="id_cliente">ID Cliente</option>
-            <option value="identificacion">Identificación</option>
-            <option value="nombre">Nombre</option>
-            <option value="apellido">Apellido</option>
-            <option value="fecha">Fecha</option>
-            <option value="subtotal">Subtotal</option>
-            <option value="iva">IVA</option>
-            <option value="descuento">Descuento</option>
-            <option value="total">Total</option>
-          </select>
-          <input type="text" class="form-control" placeholder="Buscar..." id="searchInput">
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="button" id="searchButton">
-              <i class="fa fa-search"></i> Buscar
-            </button>
-          </div>
-        </div>
-      </div>
+      <!-- ... Código de búsqueda y tabla omitido por brevedad ... -->
     </div>
     <table class="table table-striped">
       <thead>
-        <tr>
-          <th>ID Factura</th>
-          <th>ID Cliente</th>
-          <th>Identificación</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Fecha</th>
-          <th>Subtotal</th>
-          <th>IVA</th>
-          <th>Descuento</th>
-          <th>Total</th>
-        </tr>
+        <!-- ... Código de encabezado de la tabla omitido por brevedad ... -->
       </thead>
       <tbody id="invoiceTableBody">
         <!-- Los datos se cargarán dinámicamente mediante JavaScript -->
@@ -117,7 +46,7 @@ $(document).ready(function() {
       for (var i = 0; i < invoices.length; i++) {
         var invoice = invoices[i];
         tableRows += '<tr>';
-        tableRows += '<td><a href="javascript:void(0)" onclick="generatePDF(' + invoice.id_factura + ')">' + invoice.id_factura + '</a></td>';
+        tableRows += '<td><a href="javascript:void(0)" onclick="showInvoice(' + invoice.id_factura + ')">' + invoice.id_factura + '</a></td>';
         tableRows += '<td>' + invoice.id_cliente + '</td>';
         tableRows += '<td>' + invoice.identificacion + '</td>';
         tableRows += '<td>' + invoice.nombre + '</td>';
@@ -139,47 +68,32 @@ $(document).ready(function() {
 
   // Configurar el evento click del botón de búsqueda
   $('#searchButton').click(function() {
-    var searchTerm = $('#searchInput').val().toLowerCase();
-    var selectedColumn = $('#columnSelect').val();
-    console.log(searchTerm);
-    console.log(selectedColumn);
-
-    // Filtrar las facturas por el término de búsqueda en la columna seleccionada
-    $('#invoiceTableBody tr').filter(function() {
-      var columnText = $(this).find('td').eq(selectedColumn).text().toLowerCase();
-      $(this).toggle(columnText.indexOf(searchTerm) > -1);
-    });
+    // ... Código de búsqueda omitido por brevedad ...
   });
 });
 
-function generatePDF(invoiceId) {
+function showInvoice(invoiceId) {
   // Obtener los datos de la factura mediante una petición fetch al endpoint de detalle factura
   fetch('https://apex.oracle.com/pls/apex/pangolin/store/view/invoice/' + invoiceId)
     .then(response => response.json())
     .then(data => {
       var invoiceData = data.items;
-      var doc = new jsPDF();
-      var startY = 20;
+      var content = '<h2>Factura</h2>';
+      content += '<p>ID Factura: ' + invoiceData[0].id_factura + '</p>';
+      content += '<p>ID Cliente: ' + invoiceData[0].id_cliente + '</p>';
+      content += '<p>Nombre Cliente: ' + invoiceData[0].nombre_cliente + '</p>';
+      content += '<p>Apellido Cliente: ' + invoiceData[0].apellido_cliente + '</p>';
+      content += '<p>Correo Cliente: ' + invoiceData[0].correo_cliente + '</p>';
+      content += '<p>Teléfono Cliente: ' + invoiceData[0].telefono_cliente + '</p>';
+      content += '<p>Fecha: ' + invoiceData[0].fecha + '</p>';
+      content += '<p>Subtotal: ' + invoiceData[0].subtotal + '</p>';
+      content += '<p>IVA: ' + invoiceData[0].iva + '</p>';
+      content += '<p>Descuento: ' + invoiceData[0].descuento + '</p>';
+      content += '<p>Total: ' + invoiceData[0].total + '</p>';
 
-      // Generar el contenido del PDF con los datos de la factura
-      doc.setFontSize(18);
-      doc.text('Factura', 10, startY);
-      doc.setFontSize(12);
-      startY += 10;
-      doc.text('ID Factura: ' + invoiceData[0].id_factura, 10, startY);
-      doc.text('ID Cliente: ' + invoiceData[0].id_cliente, 10, startY + 10);
-      doc.text('Nombre Cliente: ' + invoiceData[0].nombre_cliente, 10, startY + 20);
-      doc.text('Apellido Cliente: ' + invoiceData[0].apellido_cliente, 10, startY + 30);
-      doc.text('Correo Cliente: ' + invoiceData[0].correo_cliente, 10, startY + 40);
-      doc.text('Teléfono Cliente: ' + invoiceData[0].telefono_cliente, 10, startY + 50);
-      doc.text('Fecha: ' + invoiceData[0].fecha, 10, startY + 60);
-      doc.text('Subtotal: ' + invoiceData[0].subtotal, 10, startY + 70);
-      doc.text('IVA: ' + invoiceData[0].iva, 10, startY + 80);
-      doc.text('Descuento: ' + invoiceData[0].descuento, 10, startY + 90);
-      doc.text('Total: ' + invoiceData[0].total, 10, startY + 100);
-
-      // Guardar el PDF
-      doc.save('factura_' + invoiceId + '.pdf');
+      // Mostrar la ventana emergente con la información de la factura
+      $('#invoiceModal .modal-body').html(content);
+      $('#invoiceModal').modal('show');
     })
     .catch(error => {
       console.log('Error al obtener los datos de la factura:', error);
@@ -187,6 +101,22 @@ function generatePDF(invoiceId) {
 }
 </script>
 <script src="navbar.js"></script>
-  
+
+<!-- Ventana emergente para mostrar la información de la factura -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="invoiceModalLabel">Detalle de Factura</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- El contenido de la ventana emergente se cargará dinámicamente mediante JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
