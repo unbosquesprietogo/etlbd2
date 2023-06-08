@@ -83,7 +83,7 @@
 
     function addData(type) {
 
-      const url="";
+      let url="";
 
       if (type === 'compras'){
         url = 'https://apex.oracle.com/pls/apex/pangolin/store/purchase/'; 
