@@ -13,7 +13,42 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <!-- ... Código del navbar omitido por brevedad ... -->
+    <a class="navbar-brand" href="index.html"  style="margin-left: 5%;">
+      <img src="icon.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
+      Pangolin
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav" style="margin-right: 5%;">
+      <ul class="navbar-nav" id="navbarItems">
+        <li class="nav-item">
+          <a class="nav-link" href="subirData.html">Subir Data</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="cliente.html">Clientes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="producto.html">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="facturas.html">Facturas</a>
+        </li>
+        <li class="nav-item" id="loginButton">
+          <a class="nav-link" href="login.html">Login</a>
+        </li>
+        <li class="nav-item dropdown" id="userDropdown" style="display: none;">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span id="loggedInUser"></span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="" id="logoutButton">
+              <i class="fa fa-sign-out-alt mr-1"></i> Log Out
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
   </nav>
 
   <div class="container mt-4">
@@ -77,21 +112,48 @@ function showInvoice(invoiceId) {
   fetch('https://apex.oracle.com/pls/apex/pangolin/store/view/invoice/' + invoiceId)
     .then(response => response.json())
     .then(data => {
-      var invoiceData = data.items;
+      var invoiceData = data.items[0];
       var content = '<h2>Factura</h2>';
-      content += '<p>ID Factura: ' + invoiceData[0].id_factura + '</p>';
-      content += '<p>ID Cliente: ' + invoiceData[0].id_cliente + '</p>';
-      content += '<p>Nombre Cliente: ' + invoiceData[0].nombre_cliente + '</p>';
-      content += '<p>Apellido Cliente: ' + invoiceData[0].apellido_cliente + '</p>';
-      content += '<p>Correo Cliente: ' + invoiceData[0].correo_cliente + '</p>';
-      content += '<p>Teléfono Cliente: ' + invoiceData[0].telefono_cliente + '</p>';
-      content += '<p>Fecha: ' + invoiceData[0].fecha + '</p>';
-      content += '<p>Subtotal: ' + invoiceData[0].subtotal + '</p>';
-      content += '<p>IVA: ' + invoiceData[0].iva + '</p>';
-      content += '<p>Descuento: ' + invoiceData[0].descuento + '</p>';
-      content += '<p>Total: ' + invoiceData[0].total + '</p>';
+      content += '<p>ID Factura: ' + invoiceData.id_factura + '</p>';
+      content += '<p>ID Cliente: ' + invoiceData.id_cliente + '</p>';
+      content += '<p>Nombre Cliente: ' + invoiceData.nombre_cliente + '</p>';
+      content += '<p>Apellido Cliente: ' + invoiceData.apellido_cliente + '</p>';
+      content += '<p>Correo Cliente: ' + invoiceData.correo_cliente + '</p>';
+      content += '<p>Teléfono Cliente: ' + invoiceData.telefono_cliente + '</p>';
+      content += '<p>Fecha: ' + invoiceData.fecha + '</p>';
 
-      // Mostrar la ventana emergente con la información de la factura
+      // Construir la tabla de productos
+      content += '<h3>Productos</h3>';
+      content += '<table class="table">';
+      content += '<thead>';
+      content += '<tr>';
+      content += '<th>Producto</th>';
+      content += '<th>Descripción</th>';
+      content += '<th>Precio Unitario</th>';
+      content += '<th>Cantidad</th>';
+      content += '<th>Descuento</th>';
+      content += '<th>Subtotal</th>';
+      content += '</tr>';
+      content += '</thead>';
+      content += '<tbody>';
+
+      // Recorrer cada producto de la factura y agregarlo a la tabla
+      for (var i = 0; i < invoiceData.items.length; i++) {
+        var product = invoiceData.items[i];
+        content += '<tr>';
+        content += '<td>' + product.nombre_producto + '</td>';
+        content += '<td>' + product.descripcion + '</td>';
+        content += '<td>' + product.precio_unitario + '</td>';
+        content += '<td>' + product.cantidad + '</td>';
+        content += '<td>' + product.descuento_producto + '</td>';
+        content += '<td>' + product.subtotal_producto + '</td>';
+        content += '</tr>';
+      }
+
+      content += '</tbody>';
+      content += '</table>';
+
+      // Mostrar la ventana emergente con la información de la factura y los productos
       $('#invoiceModal .modal-body').html(content);
       $('#invoiceModal').modal('show');
     })
@@ -99,6 +161,7 @@ function showInvoice(invoiceId) {
       console.log('Error al obtener los datos de la factura:', error);
     });
 }
+
 </script>
 <script src="navbar.js"></script>
 
