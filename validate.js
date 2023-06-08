@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
       fetch(url)
         .then(response => response.json())
         .then(data => {
+          console.log(data)
           if (data.items && data.items.length > 0) {
             // El objeto "items" contiene elementos, no hacer nada
           } else {
