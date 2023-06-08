@@ -26,6 +26,13 @@ CREATE SEQUENCE seq_compra_id
     NOCACHE
     NOCYCLE;
 
+-- Crear secuencia para Usuario
+CREATE SEQUENCE seq_usuario_id
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
 -- Crear tabla Clientes
 CREATE TABLE Clientes (
     ID_Cliente NUMBER DEFAULT seq_cliente_id.NEXTVAL PRIMARY KEY,
@@ -286,6 +293,8 @@ INSERT INTO Productos (Codigo_Barras, Nombre_Producto, Descripcion, Precio_Unita
 INSERT INTO Productos (Codigo_Barras, Nombre_Producto, Descripcion, Precio_Unitario, Cantidad_Stock) VALUES ('9012387654321', 'Harina', 'Harina de trigo 1kg', 1.99, 80);
 INSERT INTO Productos (Codigo_Barras, Nombre_Producto, Descripcion, Precio_Unitario, Cantidad_Stock) VALUES ('0123498765432', 'Tomate', 'Tomate fresco', 0.99, 100);
 
+drop view Vista_Factura;
+
 CREATE VIEW Vista_Factura AS
 SELECT f.ID_Factura,
        c.ID_Cliente,
@@ -293,6 +302,7 @@ SELECT f.ID_Factura,
        c.Apellido AS Apellido_Cliente,
        c.Correo AS Correo_Cliente,
        c.Telefono AS Telefono_Cliente,
+       c.Identificacion AS Identificacion_Cliente,
        f.Fecha,
        f.Subtotal,
        f.IVA,
@@ -320,33 +330,49 @@ CREATE TABLE usuarios (
   CONSTRAINT usuarios_pk PRIMARY KEY (id)
 );
 
+CREATE UNIQUE INDEX index_usuario ON usuarios (nombre);
+
+-- Crear trigger para secuencia en tabla Usuarios
+CREATE OR REPLACE TRIGGER trg_usuario_id
+BEFORE INSERT ON usuarios
+FOR EACH ROW
+BEGIN
+    :NEW.id := seq_usuario_id.NEXTVAL;
+END;
+
+drop table tokens;
 
 CREATE TABLE Tokens (
-  usuario_id NUMBER PRIMARY KEY,
-  token VARCHAR2(38) NOT NULL,
-  fecha_generacion DATE NOT NULL,
-  FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
+  usuario_id NUMBER,
+  token VARCHAR2(38) NOT NULL PRIMARY KEY,
+  fecha_generacion DATE NOT NULL
 );
 
 CREATE OR REPLACE PROCEDURE validar_usuario_contrasena(
-    p_usuario_id IN usuarios.id%TYPE,
+    p_usuario IN usuarios.nombre%TYPE,
     p_contrasena IN usuarios.contrasena%TYPE,
     p_status_code OUT NUMBER,
     p_error_message OUT VARCHAR2,
-    p_token OUT RAW
+    p_token OUT VARCHAR2
 )
 AS
   l_token VARCHAR2(38);
+  p_usuario_id NUMBER;
 BEGIN
   -- Verificar si el usuario y contraseña son válidos
   SELECT COUNT(*) INTO l_token
   FROM usuarios
-  WHERE id = p_usuario_id
+  WHERE nombre = p_usuario
     AND contrasena = p_contrasena;
 
   -- Si las credenciales son válidas, generar un token y almacenarlo en la tabla "Tokens"
   IF l_token = 1 THEN
     l_token := SYS_GUID();
+
+    SELECT id INTO p_usuario_id
+    FROM usuarios
+    WHERE nombre = p_usuario
+    AND contrasena = p_contrasena;
 
     INSERT INTO Tokens (usuario_id, token, fecha_generacion)
     VALUES (p_usuario_id, l_token, SYSDATE);
@@ -367,3 +393,7 @@ EXCEPTION
     p_token := NULL; -- No se genera token en caso de fallo
 END;
 
+INSERT INTO usuarios (nombre,contrasena) VALUES ('admin','123456');
+
+
+select * from vista_factura order by id_factura;
