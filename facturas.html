@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pangolin</title>
+  <title>Pangolin - Facturas</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -13,7 +13,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="index.html"  style="margin-left: 5%;">
+    <a class="navbar-brand" href="index.html" style="margin-left: 5%;">
       <img src="icon.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
       Pangolin
     </a>
@@ -51,6 +51,141 @@
     </div>
   </nav>
 
+  <div class="container mt-4">
+    <div class="row mb-2">
+      <div class="col-md-6">
+        <h2>Listado de Facturas</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <select class="form-control" id="columnSelect">
+            <option value="id_factura">ID Factura</option>
+            <option value="id_cliente">ID Cliente</option>
+            <option value="identificacion">Identificación</option>
+            <option value="nombre">Nombre</option>
+            <option value="apellido">Apellido</option>
+            <option value="fecha">Fecha</option>
+            <option value="subtotal">Subtotal</option>
+            <option value="iva">IVA</option>
+            <option value="descuento">Descuento</option>
+            <option value="total">Total</option>
+          </select>
+          <input type="text" class="form-control" placeholder="Buscar..." id="searchInput">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="searchButton">
+              <i class="fa fa-search"></i> Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID Factura</th>
+          <th>ID Cliente</th>
+          <th>Identificación</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Fecha</th>
+          <th>Subtotal</th>
+          <th>IVA</th>
+          <th>Descuento</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="invoiceTableBody">
+        <!-- Los datos se cargarán dinámicamente mediante JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+$(document).ready(function() {
+  // Obtener los datos mediante una petición fetch al endpoint
+  fetch('https://apex.oracle.com/pls/apex/pangolin/store/invoice/')
+    .then(response => response.json())
+    .then(data => {
+      // Obtener las facturas del response JSON
+      var invoices = data.items;
+
+      console.log(invoices);
+
+      // Construir las filas de la tabla con las facturas
+      var tableRows = '';
+      for (var i = 0; i < invoices.length; i++) {
+        var invoice = invoices[i];
+        tableRows += '<tr>';
+        tableRows += '<td><a href="javascript:void(0)" onclick="generatePDF(' + invoice.id_factura + ')">' + invoice.id_factura + '</a></td>';
+        tableRows += '<td>' + invoice.id_cliente + '</td>';
+        tableRows += '<td>' + invoice.identificacion + '</td>';
+        tableRows += '<td>' + invoice.nombre + '</td>';
+        tableRows += '<td>' + invoice.apellido + '</td>';
+        tableRows += '<td>' + invoice.fecha + '</td>';
+        tableRows += '<td>' + invoice.subtotal + '</td>';
+        tableRows += '<td>' + invoice.iva + '</td>';
+        tableRows += '<td>' + invoice.descuento + '</td>';
+        tableRows += '<td>' + invoice.total + '</td>';
+        tableRows += '</tr>';
+      }
+
+      // Insertar las filas en la tabla
+      $('#invoiceTableBody').html(tableRows);
+    })
+    .catch(error => {
+      console.log('Error al obtener las facturas:', error);
+    });
+
+  // Configurar el evento click del botón de búsqueda
+  $('#searchButton').click(function() {
+    var searchTerm = $('#searchInput').val().toLowerCase();
+    var selectedColumn = $('#columnSelect').val();
+    console.log(searchTerm);
+    console.log(selectedColumn);
+
+    // Filtrar las facturas por el término de búsqueda en la columna seleccionada
+    $('#invoiceTableBody tr').filter(function() {
+      var columnText = $(this).find('td').eq(selectedColumn).text().toLowerCase();
+      $(this).toggle(columnText.indexOf(searchTerm) > -1);
+    });
+  });
+});
+
+function generatePDF(invoiceId) {
+  // Obtener los datos de la factura mediante una petición fetch al endpoint de detalle factura
+  fetch('https://apex.oracle.com/pls/apex/pangolin/store/view/invoice/' + invoiceId)
+    .then(response => response.json())
+    .then(data => {
+      var invoiceData = data.items;
+      var doc = new jsPDF();
+      var startY = 20;
+
+      // Generar el contenido del PDF con los datos de la factura
+      doc.setFontSize(18);
+      doc.text('Factura', 10, startY);
+      doc.setFontSize(12);
+      startY += 10;
+      doc.text('ID Factura: ' + invoiceData[0].id_factura, 10, startY);
+      doc.text('ID Cliente: ' + invoiceData[0].id_cliente, 10, startY + 10);
+      doc.text('Nombre Cliente: ' + invoiceData[0].nombre_cliente, 10, startY + 20);
+      doc.text('Apellido Cliente: ' + invoiceData[0].apellido_cliente, 10, startY + 30);
+      doc.text('Correo Cliente: ' + invoiceData[0].correo_cliente, 10, startY + 40);
+      doc.text('Teléfono Cliente: ' + invoiceData[0].telefono_cliente, 10, startY + 50);
+      doc.text('Fecha: ' + invoiceData[0].fecha, 10, startY + 60);
+      doc.text('Subtotal: ' + invoiceData[0].subtotal, 10, startY + 70);
+      doc.text('IVA: ' + invoiceData[0].iva, 10, startY + 80);
+      doc.text('Descuento: ' + invoiceData[0].descuento, 10, startY + 90);
+      doc.text('Total: ' + invoiceData[0].total, 10, startY + 100);
+
+      // Guardar el PDF
+      doc.save('factura_' + invoiceId + '.pdf');
+    })
+    .catch(error => {
+      console.log('Error al obtener los datos de la factura:', error);
+    });
+}
+</script>
 <script src="navbar.js"></script>
+  
 </body>
 </html>
