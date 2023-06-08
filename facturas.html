@@ -10,6 +10,23 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="validate.js"></script>
+  <style>
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .product-table th,
+    .product-table td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .product-table th {
+      background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -210,21 +227,21 @@ function showInvoice(invoiceId) {
 </script>
 <script src="navbar.js"></script>
 
-<!-- Ventana emergente para mostrar la información de la factura -->
-<div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="invoiceModalLabel">Detalle de Factura</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- El contenido de la ventana emergente se cargará dinámicamente mediante JavaScript -->
+  <!-- Ventana emergente para mostrar la información de la factura -->
+  <div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="invoiceModalLabel">Detalle de Factura</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- El contenido de la ventana emergente se cargará dinámicamente mediante JavaScript -->
+        </div>
       </div>
     </div>
   </div>
-</div>
 </body>
 </html>
