@@ -10,28 +10,11 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="validate.js"></script>
-  <style>
-    body {
-      padding-top: 20px;
-    }
-
-    .container {
-      max-width: 600px;
-    }
-
-    .btn-container {
-      margin-top: 20px;
-    }
-
-    #statusMessage {
-      margin-top: 40px;
-    }
-  </style>
 </head>
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="index.html" style="margin-left: 5%;">
+    <a class="navbar-brand" href="index.html"  style="margin-left: 5%;">
       <img src="icon.png" width="30" height="30" class="d-inline-block align-top" alt="Logo">
       Pangolin
     </a>
@@ -67,16 +50,14 @@
   </nav>
 
 
-  <div class="container">
+  <div class="container mt-4">
     <h2 class="mb-4">Cargar archivo CSV</h2>
     <form>
       <div class="form-group">
         <label for="csvFile">Selecciona un archivo CSV:</label>
         <input type="file" class="form-control-file" id="csvFile" accept=".csv">
       </div>
-      <div class="btn-container">
-        <button type="button" class="btn btn-primary" onclick="processFile()">Procesar</button>
-      </div>
+      <button type="button" class="btn btn-primary" onclick="processFile()">Procesar</button>
     </form>
     <hr>
     <div id="tableContainer" style="display: none;">
@@ -87,23 +68,21 @@
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
-      <div class="btn-container">
-        <button type="button" class="btn btn-success" onclick="saveToJson()">Guardar en JSON</button>
-        <button type="button" class="btn btn-primary" onclick="addData('compras')">Añadir Compras</button>
-        <button type="button" class="btn btn-primary" onclick="addData('productos')">Añadir Productos</button>
-      </div>
+      <button type="button" class="btn btn-success" onclick="saveToJson()">Guardar en JSON</button>
+      <button type="button" class="btn btn-primary" onclick="addData('compras')">Añadir Compras</button>
+      <button type="button" class="btn btn-primary" onclick="addData('productos')">Añadir Productos</button>
     </div>
 
     <div id="statusMessage" style="display: none;">
       <h3 class="mb-4">Resultados:</h3>
-      <h4>Respuestas exitosas (201):</h4>
+      <h4>Registros aceptados:</h4>
       <table class="table table-striped">
         <thead>
           <tr id="successTableHeaders"></tr>
         </thead>
         <tbody id="successTableBody"></tbody>
       </table>
-      <h4>Respuestas con error (400):</h4>
+      <h4>Registros rechazados:</h4>
       <table class="table table-striped">
         <thead>
           <tr id="errorTableHeaders"></tr>
@@ -111,9 +90,8 @@
         <tbody id="errorTableBody"></tbody>
       </table>
     </div>
-    <div class="btn-container">
-      <button type="button" class="btn btn-primary" onclick="transform()">Transformar</button>
-    </div>
+    <hr>
+    <button type="button" class="btn btn-primary" onclick="transform()">Transformar</button>
   </div>
 
   <script src="navbar.js"></script>
