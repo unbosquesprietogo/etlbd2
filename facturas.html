@@ -171,67 +171,47 @@ $(document).ready(function() {
 });
 
 function showInvoice(invoiceId) {
-  // Obtener los datos de la factura mediante una petición fetch al endpoint de detalle factura
-  fetch('https://apex.oracle.com/pls/apex/pangolin/store/view/invoice/' + invoiceId)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data); 
-      if (data && data.items && data.items.length > 0) {
-        var invoiceData = data.items[0];
-        var content = '<h2>Factura</h2>';
-        content += '<p>ID Factura: ' + invoiceData.id_factura + '</p>';
-        content += '<p>ID Cliente: ' + invoiceData.id_cliente + '</p>';
-        content += '<p>Nombre Cliente: ' + invoiceData.nombre_cliente + '</p>';
-        content += '<p>Apellido Cliente: ' + invoiceData.apellido_cliente + '</p>';
-        content += '<p>Correo Cliente: ' + invoiceData.correo_cliente + '</p>';
-        content += '<p>Teléfono Cliente: ' + invoiceData.telefono_cliente + '</p>';
-        content += '<p>Fecha: ' + invoiceData.fecha + '</p>';
+  // ... Código de obtención de datos de factura mediante fetch omitido por brevedad ...
 
-        // Construir la tabla de productos
-        content += '<h3>Productos</h3>';
-        content += '<table class="table">';
-        content += '<thead>';
-        content += '<tr>';
-        content += '<th>Producto</th>';
-        content += '<th>Descripción</th>';
-        content += '<th>Precio Unitario</th>';
-        content += '<th>Cantidad</th>';
-        content += '<th>Descuento</th>';
-        content += '<th>Subtotal</th>';
-        content += '</tr>';
-        content += '</thead>';
-        content += '<tbody>';
+  // Construir la tabla de productos
+  content += '<h3>Productos</h3>';
+  content += '<table class="table">';
+  content += '<thead>';
+  content += '<tr>';
+  content += '<th>Producto</th>';
+  content += '<th>Descripción</th>';
+  content += '<th>Precio Unitario</th>';
+  content += '<th>Cantidad</th>';
+  content += '<th>Descuento</th>';
+  content += '<th>Subtotal</th>';
+  content += '</tr>';
+  content += '</thead>';
+  content += '<tbody>';
 
-        // Verificar si invoiceData.items está definido
-        if (Array.isArray(invoiceData.items)) {
-          // Recorrer cada producto de la factura y agregarlo a la tabla
-          for (var i = 0; i < invoiceData.items.length; i++) {
-            var product = invoiceData.items[i];
-            content += '<tr>';
-            content += '<td>' + product.nombre_producto + '</td>';
-            content += '<td>' + product.descripcion + '</td>';
-            content += '<td>' + product.precio_unitario + '</td>';
-            content += '<td>' + product.cantidad + '</td>';
-            content += '<td>' + product.descuento_producto + '</td>';
-            content += '<td>' + product.subtotal_producto + '</td>';
-            content += '</tr>';
-          }
-        }
+  // Verificar si invoiceData.items está definido
+  if (Array.isArray(invoiceData.items)) {
+    // Recorrer cada producto de la factura y agregarlo a la tabla
+    for (var i = 0; i < invoiceData.items.length; i++) {
+      var product = invoiceData.items[i];
+      content += '<tr>';
+      content += '<td>' + product.nombre_producto + '</td>';
+      content += '<td>' + product.descripcion + '</td>';
+      content += '<td>' + product.precio_unitario + '</td>';
+      content += '<td>' + product.cantidad + '</td>';
+      content += '<td>' + product.descuento_producto + '</td>';
+      content += '<td>' + product.subtotal_producto + '</td>';
+      content += '</tr>';
+    }
+  }
 
-        content += '</tbody>';
-        content += '</table>';
+  content += '</tbody>';
+  content += '</table>';
 
-        // Mostrar la ventana emergente con la información de la factura y los productos
-        $('#invoiceModal .modal-body').html(content);
-        $('#invoiceModal').modal('show');
-      } else {
-        console.log('No se encontraron datos de la factura');
-      }
-    })
-    .catch(error => {
-      console.log('Error al obtener los datos de la factura:', error);
-    });
+  // Mostrar la ventana emergente con la información de la factura y los productos
+  $('#invoiceModal .modal-body').html(content);
+  $('#invoiceModal').modal('show');
 }
+
 
 
 
